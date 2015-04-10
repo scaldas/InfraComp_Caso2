@@ -60,6 +60,8 @@ public class Algoritmos
 	}
 	
 	public  byte[] desencripcionAsimetrica (byte[] mensaje_desencriptar, Key llave_asimetrica, String algoritmo) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		if (algoritmo.equals(Cliente.DES)|| algoritmo.equals(Cliente.AES))
+			algoritmo += "/ECB/PKCS5Padding";
 		Cipher cipher = Cipher.getInstance(algoritmo);
 		cipher.init(2, llave_asimetrica);
 		return cipher.doFinal(mensaje_desencriptar);
@@ -67,7 +69,7 @@ public class Algoritmos
 
 	public byte[] encriptacionSimetrica(byte[] mensaje_encriptar,
 		SecretKey llave_simetrica, String algoritmo) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		if (algoritmo.equals("DES")|| algoritmo.equals("AES"))
+		if (algoritmo.equals(Cliente.DES)|| algoritmo.equals(Cliente.AES))
 				algoritmo += "/ECB/PKCS5Padding";
 		Cipher cipher = Cipher.getInstance(algoritmo);
 		cipher.init(1, llave_simetrica);

@@ -31,6 +31,15 @@ public class Cliente{
 	private Algoritmos algoritmos;
 	private HexaManager hexaManager;
 	
+	public final static String DES = "DES";
+	public final static String AES = "AES";
+	public final static String Blowfish = "Blowfish";
+	public final static String RC4 = "RC4";
+	public final static String RSA = "RSA";
+	public final static String HMACMD5 = "HMACMD5";
+	public final static String HMASHA1 = "HMASHA1";
+	public final static String HMACSHA256 = "HMACSHA256";
+
 	public Cliente(String simetrico, String asimetrico, String hash)
 	{
 		this.simetrico = simetrico;
@@ -110,7 +119,7 @@ public class Cliente{
 		
 		SecretKey llave_simetrica = new SecretKeySpec(bytes_llave_simetrica, 0, bytes_llave_simetrica.length, simetrico);
     
-		String datos = "<Posicion>";
+		String datos = "41 24.2028, 2 10.4418";
        
 		byte[] datos_encriptados = algoritmos.encriptacionSimetrica(datos.getBytes(), llave_simetrica, simetrico);
 		String mensaje_encriptado = hexaManager.toHexa(datos_encriptados);
@@ -122,15 +131,32 @@ public class Cliente{
     	String mensaje_hmac = hexaManager.toHexa(hmac_encriptado);
 
 	    writer.println("ACT2:" + mensaje_hmac);
-	    System.out.println(reader.readLine());
-
+	    respuesta = reader.readLine();
+		
+	    if(!respuesta.equals("RTA:OK"))
+		{
+			if(respuesta.equals("RTA:ERROR"))
+				throw new Exception("El servidor reporta un error en la comunicacion: " + respuesta);
+			else
+				throw new Exception("Mensaje no definido: Se esperaba RTA:OK o RTA:ERROR y se recibio " + respuesta);
+		}
+	    else
+	    	System.out.println("Comunicacion exitosa: " + respuesta);
 	    clientSocket.close();
 	}
 
-	public static void main(String[] args) throws Exception 
+	public static void main(String[] args)  
 	{
-		Cliente cliente = new Cliente("DES", "RSA", "HMACMD5");
-		cliente.ejecutarComunicacion( );
+		Cliente cliente = new Cliente(DES, RSA, HMACMD5);
+		
+		try
+		{
+			cliente.ejecutarComunicacion( );
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 		
 }
