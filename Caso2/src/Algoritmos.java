@@ -1,5 +1,6 @@
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -9,6 +10,12 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.x509.*;
@@ -47,15 +54,39 @@ public class Algoritmos
 		//Algoritmo para la firma. Se usa SHA pues MD5 ya se considera inseguro
 		//Al usar SHA256WITHRSAENCRYPTION obtengo un java.security.NoSuchAlgorithmException
 		generador.setSignatureAlgorithm("SHA256WITHRSA");
-		
-		//generador.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false));
-		//generador.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(160));
-		//generador.addExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(KeyPurposeId.id_kp_serverAuth));
-		//generador.addExtension(X509Extensions.SubjectAlternativeName, false, new GeneralNames(new GeneralName(1, "test@test.test")));
-		
+				
 		X509Certificate certificado = generador.generate(llavesAsimetricas.getPrivate());
 		return certificado;
 	}
 	
-	
+	public  byte[] desencripcionAsimetrica (byte[] mensaje_desencriptar, Key llave_asimetrica, String algoritmo) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		Cipher cipher = Cipher.getInstance(algoritmo);
+		cipher.init(2, llave_asimetrica);
+		return cipher.doFinal(mensaje_desencriptar);
+	}
+
+	public byte[] encriptacionSimetrica(byte[] mensaje_encriptar,
+		SecretKey llave_simetrica, String algoritmo) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		if (algoritmo.equals("DES")|| algoritmo.equals("AES"))
+				algoritmo += "/ECB/PKCS5Padding";
+		Cipher cipher = Cipher.getInstance(algoritmo);
+		cipher.init(1, llave_simetrica);
+		return cipher.doFinal(mensaje_encriptar);
+
+	}
+
+	public byte[] hmac(byte[] bytes_mensaje, SecretKey llave_simetrica, String hash) throws NoSuchAlgorithmException, InvalidKeyException {
+		Mac mac = Mac.getInstance(hash);
+		mac.init(llave_simetrica);
+		byte[] bytes = mac.doFinal(bytes_mensaje);
+		return bytes;
+	}
+
+	public static byte[] encripcionAsimetrica(byte[] mensaje_desencriptar, Key llave_asimetrica, String algoritmo)
+			throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException
+	{
+		Cipher cipher = Cipher.getInstance(algoritmo);
+		cipher.init(1, llave_asimetrica);
+		return cipher.doFinal(mensaje_desencriptar);
+	}
 }
