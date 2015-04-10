@@ -82,7 +82,7 @@ public class Algoritmos
 		return bytes;
 	}
 
-	public static byte[] encripcionAsimetrica(byte[] mensaje_desencriptar, Key llave_asimetrica, String algoritmo)
+	public byte[] encripcionAsimetrica(byte[] mensaje_desencriptar, Key llave_asimetrica, String algoritmo)
 			throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException
 	{
 		Cipher cipher = Cipher.getInstance(algoritmo);

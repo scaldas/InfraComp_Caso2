@@ -29,6 +29,7 @@ public class Cliente{
 	private InputStream input;
 	
 	private Algoritmos algoritmos;
+	private HexaManager hexaManager;
 	
 	public Cliente(String simetrico, String asimetrico, String hash)
 	{
@@ -50,6 +51,7 @@ public class Cliente{
 		}
 
 		algoritmos = new Algoritmos( );
+		hexaManager = new HexaManager( );
 	}
 
 	public void ejecutarComunicacion( ) throws Exception
@@ -100,36 +102,25 @@ public class Cliente{
 		{
 			throw new Exception("Mensaje no definido: Se esperaba INIT y se recibio " + respuesta);
 		}	
-	
-		byte[] bytes_encriptados = new byte[respuesta.split(":")[1].length() / 2];
-		for (int i = 0; i < bytes_encriptados.length; i++) {
-			bytes_encriptados[i] = ((byte)Integer.parseInt(respuesta.split(":")[1].substring(i * 2, (i + 1) * 2), 16));
-		}
-    
+
+		byte[] bytes_encriptados = hexaManager.fromHexa(respuesta.split(":")[1]);
+		
 		byte[] bytes_llave_simetrica =  algoritmos.desencripcionAsimetrica(bytes_encriptados, 
 				llavesAsimetricas.getPrivate(), asimetrico);
-    
+		
 		SecretKey llave_simetrica = new SecretKeySpec(bytes_llave_simetrica, 0, bytes_llave_simetrica.length, simetrico);
     
 		String datos = "<Posicion>";
        
-		byte[] datos_encriptados =algoritmos.encriptacionSimetrica(datos.getBytes(), llave_simetrica, simetrico);
-		String mensaje_encriptado = "";
-		for (int i = 0; i < datos_encriptados.length; i++) {
-			String g = Integer.toHexString((char)datos_encriptados[i] & 0xFF);
-			mensaje_encriptado = mensaje_encriptado + (g.length() == 1 ? "0" : "") + g;
-		}
+		byte[] datos_encriptados = algoritmos.encriptacionSimetrica(datos.getBytes(), llave_simetrica, simetrico);
+		String mensaje_encriptado = hexaManager.toHexa(datos_encriptados);
     
     	writer.println("ACT1:" + mensaje_encriptado);
        
- 
     	byte[] hmac = algoritmos.hmac(datos.getBytes(), llave_simetrica, hash);
     	byte[] hmac_encriptado = algoritmos.encripcionAsimetrica(hmac, certificadoServidor.getPublicKey(), asimetrico);
-    	String mensaje_hmac = "";
-	    for (int i = 0; i < hmac_encriptado.length; i++) {
-	    	String g = Integer.toHexString((char)hmac_encriptado[i] & 0xFF);
-	    	mensaje_hmac = mensaje_hmac + (g.length() == 1 ? "0" : "") + g;
-	    }
+    	String mensaje_hmac = hexaManager.toHexa(hmac_encriptado);
+
 	    writer.println("ACT2:" + mensaje_hmac);
 	    System.out.println(reader.readLine());
 
