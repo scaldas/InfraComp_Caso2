@@ -15,8 +15,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Cliente{
 	
-	//public final static String IP_SERVIDOR = "infracomp.virtual.uniandes.edu.co";
-	public final static String IP_SERVIDOR = "localhost";
+	public final static String IP_SERVIDOR = "infracomp.virtual.uniandes.edu.co";
+	//public final static String IP_SERVIDOR = "localhost";
 	public final static int PUERTO_SERVIDOR = 443;
 
 	private String simetrico;
@@ -37,7 +37,7 @@ public class Cliente{
 	public final static String RC4 = "RC4";
 	public final static String RSA = "RSA";
 	public final static String HMACMD5 = "HMACMD5";
-	public final static String HMASHA1 = "HMASHA1";
+	public final static String HMACSHA1 = "HMACSHA1";
 	public final static String HMACSHA256 = "HMACSHA256";
 
 	public Cliente(String simetrico, String asimetrico, String hash)
@@ -147,7 +147,7 @@ public class Cliente{
 
 	public static void main(String[] args)  
 	{
-		Cliente cliente = new Cliente(DES, RSA, HMACMD5);
+		Cliente cliente = new Cliente(DES, RSA, HMACSHA256);
 		
 		try
 		{
