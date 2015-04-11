@@ -22,7 +22,6 @@ import javax.crypto.spec.SecretKeySpec;
  * Cliente
  * Se encarga de llevar a cabo todo el protocolo de comunicacion de un Cliente.
  */
-
 public class Cliente{
 	
 	// -----------------------------------------------------------------
@@ -90,6 +89,10 @@ public class Cliente{
 	 */
 	private HexaManager hexaManager;
 	
+	// -----------------------------------------------------------------
+	// Metodos
+	// -----------------------------------------------------------------
+
 	/**
 	 * Constructor
 	 * @param simetrico Algoritmo simetrico a utilizar
