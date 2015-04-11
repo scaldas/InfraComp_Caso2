@@ -1,6 +1,20 @@
+/**
+ * --------------------------------Infraestructura Computacional--------------------------------
+ * -----------Sistema de Gestion Empresarial y Operativa de una Compañia Transportadora---------
+ * ---------------------------------Caso 2 - Canales Seguros------------------------------------
+ * --------------------------Ana Maria Cardenas, Sebastian Caldas-------------------------------
+ */
 
+/**
+ * HexaManager
+ * Se encarga de pasar a y desde hexadecimal.
+ */
 public class HexaManager {
 	
+	/**
+	 * Convierte el mensaje a hexadecimal
+	 * @param mensajeEncriptado Mensaje a convertir en hexadecimal
+	 */
 	public String toHexa(byte[] mensajeEncriptado)
 	{
 		String rta = "";
@@ -11,6 +25,10 @@ public class HexaManager {
 		return rta;
 	}
 	
+	/**
+	 * Convierte el mensaje desde hexadecimal
+	 * @param respuestaEncriptada Mensaje a convertir desde hexadecimal
+	 */
 	public byte[] fromHexa(String respuestaEncriptada)
 	{
 		byte[] bytes_encriptados = new byte[respuestaEncriptada.length()/2];
